@@ -18,6 +18,7 @@ To run the game, you'll need:
 - NodeJS with NPM installed
 - socket.io 
 - Express
+- Morgan
 
 ## Installation
 
