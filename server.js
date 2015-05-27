@@ -74,7 +74,7 @@ Game.prototype.findPlayer = function(id) {
         }
     }
     return null;
-}
+};
 
 Game.prototype.findPlayerIndex = function(id) {
     for (var i = 0; i < this.users.length; i++) {
@@ -84,7 +84,7 @@ Game.prototype.findPlayerIndex = function(id) {
     }
 
     return -1;
-}
+};
 
 Game.prototype.findFoodIndex = function(id) {
     for (var i = 0; i < this.foods.length; i++) {
@@ -94,12 +94,12 @@ Game.prototype.findFoodIndex = function(id) {
     }
 
   return -1;
-}
+};
 
 Game.prototype.hitTest = function(start, end, min) {
     var distance = Math.sqrt((start.x - end.x) * (start.x - end.x) + (start.y - end.y) * (start.y - end.y));
     return (distance <= min);
-}
+};
 
 Game.prototype.randomColor = function() {
     var color = '#' + ('00000'+(Math.random()*(1<<24)|0).toString(16)).slice(-6),
@@ -123,7 +123,7 @@ Game.prototype.randomColor = function() {
         fill: color,
         border: '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)
     }
-}
+};
 
 Game.prototype.movePlayer = function(player, target) {
     var xVelocity = target.x - player.x,
@@ -136,7 +136,7 @@ Game.prototype.movePlayer = function(player, target) {
 
     player.x += finalX;
     player.y += finalY;
-}
+};
 
 var game = new Game();
 
