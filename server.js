@@ -227,19 +227,20 @@ io.on('connection', function(socket) {
                     { x: currentPlayer.x, y: currentPlayer.y },
                     currentPlayer.mass + game.defaultPlayerSize
                 )) {
-                    if (game.users[e].mass != 0 && game.users[e].mass < currentPlayer.mass - game.eatableMassDistance) {           
-                        if (currentPlayer.mass < maxSizeMass) {
+                    if (game.users[e].mass != 0 && game.users[e].mass < currentPlayer.mass) {           
+                        if (currentPlayer.mass < this.maxSizeMass) {
                             currentPlayer.mass += game.users[e].mass;
                         }
 
-                        if (currentPlayer.speed < maxMoveSpeed) {
+                        if (currentPlayer.speed < this.maxMoveSpeed) {
                             currentPlayer.speed += currentPlayer.mass / game.massDecreaseRatio;
                         }
                         sockets[game.users[e].playerID].emit("RIP");
                         sockets[game.users[e].playerID].disconnect();
                         game.users.splice(e, 1);
+                        console.log(game.users[e]);
                         break;
-                    }
+                    } 
                 }
             }
 
