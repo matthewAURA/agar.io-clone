@@ -6,7 +6,7 @@ Agar.io Clone
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/huytd/agar.io-clone?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ## Live demo
-- ![Live Demo] (https://tommy-agar.herokuapp.com/)
+- [Live Demo] (https://tommy-agar.herokuapp.com/)
 
 A simple Agar.io clone built with socket.io and HTML5 Canvas on top of NodeJS.
 
