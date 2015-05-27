@@ -5,19 +5,13 @@ Agar.io Clone
 [![GitHub Issues](https://img.shields.io/github/issues/huytd/agar.io-clone.svg)](https://github.com/huytd/agar.io-clone/issues)
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/huytd/agar.io-clone?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-## Live demo
-- [Live Demo] (https://tommy-agar.herokuapp.com/)
-
-A simple Agar.io clone built with socket.io and HTML5 Canvas on top of NodeJS.
+The SESA fork of [HuyTD's](https://github.com/huytd/agar.io-clone) Agar.io clone.
 
 ![Image](http://i.imgur.com/igXo4xh.jpg)
 
-## Latest Changes
-- Game logic handled by server
-- Client side is for rendering only
-- Display player name
-- Now supporting chat 
-- Type`-ping` in the chatbox to check your ping
+## Features
+- Self hostable, private Agar servers
+- Chat
 
 ## Requirements
 To run the game, you'll need: 
@@ -27,16 +21,16 @@ To run the game, you'll need:
 
 ## Installation
 
-#### Downloading the Dependencies
+### Downloading the Dependencies
 After cloning the source code from Github, you need to run the following command to download all the dependencies (socket.io, express, etc.).
 
 ```
 npm install
 ```
 
-#### Running the Server
+### Running the Server
 
-After download all the dependencies, you can run the server with the following command to run the server.
+After downloading the dependencies, you can run the server with the following command to run the server.
 
 ```
 node server.js
@@ -50,7 +44,7 @@ You are the red circle.
 
 Move your mouse on the screen to move yourself.
 
-Eat all yellow food to grow. (Food respawns every time player eat).
+Eat all coloured food to grow.
 
 Try to get fat and eat other players.
 
