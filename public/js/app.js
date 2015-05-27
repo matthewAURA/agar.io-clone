@@ -14,6 +14,8 @@ var disconnected = false;
 
 var startPingTime = 0;
 
+var backgroundColor = '#EEEEEE';
+
 var KEY_ENTER = 13;
 
 var foodConfig = {
@@ -87,17 +89,46 @@ function checkLatency() {
   socket.emit("ping");
 }
 
+function toggleDarkMode() {
+  var LIGHT = '#EEEEEE',
+      DARK = '#181818';
+  if (backgroundColor === LIGHT) {
+    backgroundColor = DARK;
+    addSystemLine('Dark mode enabled');
+  } else {
+    backgroundColor = LIGHT;
+    addSystemLine('Dark mode disabled');
+  }
+}
+
+function printHelp() {
+  addSystemLine('-dark: toggle dark mode')
+  addSystemLine('-ping: check your latency')
+}
+
 function sendChat(key) {
   var key = key.which || key.keyCode;
   if (key == KEY_ENTER) {
     var text = chatInput.value.replace(/(<([^>]+)>)/ig,"");
     if (text != "") {
-      if (text != "-ping") {
-        socket.emit("playerChat", { sender: player.name, message: text });
-        addChatLine(player.name, text);
-      } else {
-        checkLatency();
-      }
+      if (text.indexOf('-') === 0) {
+        switch (text) {
+          case '-ping':
+            checkLatency();
+            break;
+          case '-dark':
+            toggleDarkMode();
+            break;
+          case '-help':
+            printHelp();
+            break;
+          default:
+            addSystemLine('Unrecoginised Command: ' + text + ', type -help for more info');
+          }
+        } else {
+          socket.emit("playerChat", { sender: player.name, message: text });
+          addChatLine(player.name, text);
+        }
       chatInput.value = "";
     }
   }
@@ -129,6 +160,7 @@ socket.on("welcome", function(userID) {
   gameStart = true;
   console.log("Game is started: " + gameStart);
   addSystemLine("Connected to the game!");
+  addSystemLine("Type -help for chat commands");
 });
 
 socket.on("playerDisconnect", function(data) {
@@ -177,8 +209,8 @@ socket.on("RIP", function(){
 
 
 function drawFood(food) {
-  graph.strokeStyle = foodConfig.borderColor;
-  graph.fillStyle = foodConfig.fillColor;
+  graph.strokeStyle = food.color.border || foodConfig.borderColor;
+  graph.fillStyle = food.color.fill || foodConfig.fillColor;
   graph.lineWidth = foodConfig.border;
   graph.beginPath();
   graph.arc(food.x, food.y, foodConfig.size, 0, 2 * Math.PI);
@@ -249,7 +281,7 @@ window.requestAnimFrame = (function(){
 function gameLoop() {
   if (!disconnected) {
     if (gameStart) {
-      graph.fillStyle = "#EEEEEE";
+      graph.fillStyle = backgroundColor;
       graph.fillRect(0, 0, gameWidth, gameHeight);
 
       for (var i = 0; i < foods.length; i++) {
