@@ -61,3 +61,8 @@ Try to get fat and eat other players.
 - Everytime a player joined the game, **3** new food will be spawn
 - Everytime a food be eaten by a player, **1** new food will be respawn
 - The more food you eat, the more slow you will move
+
+## Contributing
+
+- Please read open issues to determine current focus.
+- Please follow [this](https://slack-redir.net/link?url=https%3A%2F%2Fgithub.com%2Fairbnb%2Fjavascript%2Ftree%2Fmaster%2Fes5&v=3) style guide.
