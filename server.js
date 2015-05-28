@@ -26,7 +26,7 @@ var serverPort = 3000;
 
 
 function Game(){
-
+    
     this.maxSizeMass = 50;
     this.maxMoveSpeed = 10;
     this.massDecreaseRatio = 1000;
