@@ -26,7 +26,6 @@ var serverPort = 3000;
 
 
 function Game(){
-
     this.maxSizeMass = 50;
     this.maxMoveSpeed = 10;
     this.massDecreaseRatio = 1000;
@@ -160,6 +159,7 @@ io.on('connection', function(socket) {
 
         socket.emit("playerJoin", { playersList: game.users, connectedName: player.name });
         socket.broadcast.emit("playerJoin", { playersList: game.users, connectedName: player.name });
+        socket.emit("allPlayerScore", game.users);
         console.log("Total player: " + game.users.length);
         
 
@@ -189,6 +189,8 @@ io.on('connection', function(socket) {
 
     // Heartbeat function, update everytime
     socket.on("playerSendTarget", function(target) {
+
+        socket.emit("allPlayerScore", game.users);
         if (target.x != currentPlayer.x && target.y != currentPlayer.y) {
             game.movePlayer(currentPlayer, target);
 
@@ -210,7 +212,7 @@ io.on('connection', function(socket) {
                     if (currentPlayer.speed < game.maxMoveSpeed) {
                         currentPlayer.speed += currentPlayer.mass / game.massDecreaseRatio;
                     }
-
+                    socket.emit("score", currentPlayer);
                     console.log("Food eaten");
 
                     // Respawn food

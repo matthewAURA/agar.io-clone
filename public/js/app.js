@@ -176,6 +176,24 @@ socket.on("playerJoin", function(data) {
   addSystemLine("Player <b>" + data.connectedName + "</b> joined!");
 });
 
+socket.on("score", function(playerData) {
+  document.getElementById("score").innerHTML = "Score: " + playerData.mass;
+  addSystemLine("Player <b>" + data.connectedName + "</b> score: " + playerData.mass + "!");
+});
+
+socket.on("allPlayerScore", function(playerArray) {
+  playerArray.sort(compare);
+  var result = "SESA Leaderboard <br/>";
+  for(var i = 0; i < playerArray.length; i++){
+    var player = playerArray[i];
+    result += player.name + ": " + player.mass + "<br/>";
+    if (i > 5){
+      break;
+    }
+  }
+  document.getElementById("playerScore").innerHTML = result;
+});
+
 // Chat
 socket.on("serverSendPlayerChat", function(data){
   addChatLine(data.sender, data.message);
@@ -207,6 +225,13 @@ socket.on("RIP", function(){
   socket.close();
 });
 
+function compare(playerOne, playerTwo) {
+  if (playerOne.mass < playerTwo.mass)
+    return 1;
+  if (playerOne.mass > playerTwo.mass)
+    return -1;
+  return 0;
+}
 
 function drawFood(food) {
   graph.strokeStyle = food.color.border || foodConfig.borderColor;
