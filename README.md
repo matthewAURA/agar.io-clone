@@ -65,4 +65,4 @@ Try to get fat and eat other players.
 ## Contributing
 
 - Please read open issues to determine current focus.
-- Please follow [this](https://slack-redir.net/link?url=https%3A%2F%2Fgithub.com%2Fairbnb%2Fjavascript%2Ftree%2Fmaster%2Fes5&v=3) style guide.
+- Please follow [this](https://github.com/airbnb/javascript/tree/master/es5) style guide.
