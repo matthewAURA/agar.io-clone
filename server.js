@@ -228,7 +228,6 @@ Game.prototype.tick = function(onTick){
 var game = new Game();
 setInterval(function(){
     game.tick();
-    console.log(game.users.length);
 },16); //60fps ish
 
 io.on('connection', function(socket) {  
