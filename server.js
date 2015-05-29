@@ -54,7 +54,7 @@ Food.prototype.randomColor = function() {
     return {
         fill: color,
         border: '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)
-    }
+    };
 };
 
 function Player(x,y,id){
@@ -203,15 +203,15 @@ Game.prototype.tick = function(onTick){
                 { x: player.x, y: player.y },
                 player.mass + _this.defaultPlayerSize
             )) {
-                if (_this.users[e].mass != 0 && _this.users[e].mass < player.mass - _this.eatableMassDistance) {           
+                if (_this.users[e].mass !== 0 && _this.users[e].mass < player.mass - _this.eatableMassDistance) {           
                     if (player.mass < _this.maxSizeMass) {
                         player.mass += _this.users[e].mass;
                     }
 
-                    if (player.speed < maxMoveSpeed) {
+                    if (player.speed < _this.maxMoveSpeed) {
                         player.speed += player.mass / _this.massDecreaseRatio;
                     }
-                    player.disconnect();
+                    _this.users[e].disconnect();
                     _this.users.splice(e, 1);
                     break;
                 }
@@ -228,6 +228,7 @@ Game.prototype.tick = function(onTick){
 var game = new Game();
 setInterval(function(){
     game.tick();
+    console.log(game.users.length);
 },16); //60fps ish
 
 io.on('connection', function(socket) {  
@@ -243,7 +244,6 @@ io.on('connection', function(socket) {
     player.notify = function(){
         socket.emit("serverTellPlayerMove", player);
         socket.emit("serverTellPlayerUpdateFoods", game.foods);
-        console.log(game.users);
         socket.broadcast.emit("serverUpdateAllPlayers", game.users);
         socket.broadcast.emit("serverUpdateAllFoods", game.foods);
     };
@@ -277,7 +277,6 @@ io.on('connection', function(socket) {
     });
 
     socket.on('disconnect', function() {
-        var playerName = player.name;
         game.users.splice(game.users.indexOf(player), 1);
         console.log('User #' + player.id + ' disconnected');
         socket.broadcast.emit("playerDisconnect", { playersList: game.users, disconnectName: player.name });
