@@ -57,6 +57,15 @@ Food.prototype.randomColor = function() {
     }
 };
 
+function Player(x,y,id){
+    this.x = x;
+    this.y = y; 
+    this.mass = 0;
+    this.speed = 80;
+}
+
+
+
 
 function Game(){
     
@@ -150,15 +159,16 @@ io.on('connection', function(socket) {
 
     var userID = socket.id;
     var currentPlayer = {};
-
-    socket.emit("welcome", userID);
+    var newPlayer = new Player(0,0,userID);
+    
+    socket.emit("welcome", newPlayer);
 
     socket.on("gotit", function(player) {
-        player.playerID = userID;
-        sockets[player.playerID] = socket;
+        player.id = userID;
+        sockets[player.id] = socket;
 
-        if (game.findPlayer(player.playerID) == null) {
-            console.log("Player " + player.playerID + " connected!");
+        if (game.findPlayer(player.id) == null) {
+            console.log("Player " + player.id + " connected!");
             game.users.push(player);
             currentPlayer = player;
         }
@@ -197,7 +207,7 @@ io.on('connection', function(socket) {
         if (target.x != currentPlayer.x && target.y != currentPlayer.y) {
             game.movePlayer(currentPlayer, target);
 
-            game.users[game.findPlayerIndex(currentPlayer.playerID)] = currentPlayer;
+            game.users[game.findPlayerIndex(currentplayer.id)] = currentPlayer;
 
             for (var f = 0; f < game.foods.length; f++) {
                 if (game.hitTest(

@@ -45,13 +45,7 @@ var enemyConfig = {
   defaultSize: 10
 };
 
-var player = {
-  playerID: -1,
-  x: gameWidth / 2, y: gameHeight / 2,
-  mass: 0, speed: 80,
-  screenWidth: gameWidth,
-  screenHeight: gameHeight
-};
+
 
 var foods = [];
 var enemies = [];
@@ -153,7 +147,10 @@ socket.on("disconnect", function() {
 });
 
 // Handle connection
-socket.on("welcome", function(userID) {
+socket.on("welcome", function(player) {
+    
+  player.screenWidth = gameWidth;
+  player.screenHeigh = gameHeight;
   player.playerID = userID;
   player.name = playerName;
   socket.emit("gotit", player);
