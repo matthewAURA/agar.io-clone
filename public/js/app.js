@@ -46,10 +46,10 @@ var enemyConfig = {
 };
 
 
-
+var player = null;
 var foods = [];
 var enemies = [];
-var target = {x: player.x, y: player.y};
+var target = null;
 
 var c = document.getElementById("cvs");
 c.addEventListener("mousemove", gameInput, false);
@@ -147,12 +147,12 @@ socket.on("disconnect", function() {
 });
 
 // Handle connection
-socket.on("welcome", function(player) {
-    
+socket.on("welcome", function(p) {  
+  player = p;
   player.screenWidth = gameWidth;
-  player.screenHeigh = gameHeight;
-  player.playerID = userID;
+  player.screenHeight = gameHeight;
   player.name = playerName;
+  target = {x: player.x, y: player.y};
   socket.emit("gotit", player);
   gameStart = true;
   console.log("Game is started: " + gameStart);
@@ -257,8 +257,10 @@ function drawEnemy(enemy) {
 }
 
 function gameInput(mouse) {
-  target.x = mouse.clientX;
-  target.y = mouse.clientY;
+  if (target){
+    target.x = mouse.clientX;
+    target.y = mouse.clientY;
+  }
 }
 
 window.requestAnimFrame = (function(){
@@ -276,7 +278,7 @@ window.requestAnimFrame = (function(){
 })();
 
 function gameLoop() {
-  if (!disconnected) {
+  if (!disconnected && (player !== null)) {
     if (gameStart) {
       graph.fillStyle = backgroundColor;
       graph.fillRect(0, 0, gameWidth, gameHeight);
@@ -290,7 +292,7 @@ function gameLoop() {
           drawEnemy(enemies[i]);
         }
       }
-
+      
       drawPlayer();
       socket.emit("playerSendTarget", target);
     } else {

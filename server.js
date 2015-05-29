@@ -60,8 +60,11 @@ Food.prototype.randomColor = function() {
 function Player(x,y,id){
     this.x = x;
     this.y = y; 
+    this.id = id;
     this.mass = 0;
     this.speed = 80;
+    this.connected = false;
+    this.name = undefined;
 }
 
 
@@ -105,7 +108,7 @@ Game.prototype.generateFood = function(target) {
 
 Game.prototype.findPlayer = function(id) {
     for (var i = 0; i < this.users.length; i++) {
-        if (this.users[i].playerID == id) {
+        if (this.users[i].id == id) {
             return this.users[i];
         }
     }
@@ -114,7 +117,7 @@ Game.prototype.findPlayer = function(id) {
 
 Game.prototype.findPlayerIndex = function(id) {
     for (var i = 0; i < this.users.length; i++) {
-        if (this.users[i].playerID == id) {
+        if (this.users[i].id == id) {
             return i;
         }
     }
@@ -159,16 +162,17 @@ io.on('connection', function(socket) {
 
     var userID = socket.id;
     var currentPlayer = {};
-    var newPlayer = new Player(0,0,userID);
-    
-    socket.emit("welcome", newPlayer);
-
-    socket.on("gotit", function(player) {
-        player.id = userID;
-        sockets[player.id] = socket;
-
-        if (game.findPlayer(player.id) == null) {
+    var player = new Player(0,0,userID);
+    socket.emit("welcome", player);
+  
+    socket.on("gotit", function(remotePlayer) {
+        if (!player.connected) {
             console.log("Player " + player.id + " connected!");
+            player.name = remotePlayer.name.replace(/(<([^>]+)>)/ig,"");
+            player.screenWidth = remotePlayer.screenWidth; //Want to depricate this...
+            player.screenHeight = remotePlayer.screenHeight; //And this... 
+            player.connected = true;
+            sockets[player.id] = socket;
             game.users.push(player);
             currentPlayer = player;
         }
@@ -204,10 +208,11 @@ io.on('connection', function(socket) {
 
     // Heartbeat function, update everytime
     socket.on("playerSendTarget", function(target) {
+        //Want to refactor this so that it simply saves the target destination of the player but gets updated somewhere else
+        
         if (target.x != currentPlayer.x && target.y != currentPlayer.y) {
             game.movePlayer(currentPlayer, target);
-
-            game.users[game.findPlayerIndex(currentplayer.id)] = currentPlayer;
+            //game.users[game.findPlayerIndex(currentplayer.id)] = currentPlayer;
 
             for (var f = 0; f < game.foods.length; f++) {
                 if (game.hitTest(
