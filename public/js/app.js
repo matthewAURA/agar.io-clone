@@ -69,12 +69,11 @@ function addChatLine(name, text) {
   chatList.insertBefore(chatLine, chatList.childNodes[0]);
 }
 
-function addSystemLine(text) {
-  var chatLine = document.createElement("li");
-  chatLine.className = "system";
-  chatLine.innerHTML = text;
-  var chatList = document.getElementById("chatList");
-  chatList.insertBefore(chatLine, chatList.childNodes[0]);
+function registerChatCommand(name, description, callback) {
+  chatCommands[name] = {
+    description: description,
+    callback: callback
+  }
 }
 
 function checkLatency() {
@@ -83,10 +82,13 @@ function checkLatency() {
   socket.emit("ping");
 }
 
-function toggleDarkMode() {
-  var LIGHT = '#EEEEEE',
-      DARK = '#181818';
-  if (backgroundColor === LIGHT) {
+function toggleDarkMode(args) {
+  var LIGHT = '#EEEEEE';
+  var DARK = '#181818';
+  var on = args[0] === 'on';
+  var off = args[0] === 'off';
+
+  if (on || (!off && backgroundColor === LIGHT)) {
     backgroundColor = DARK;
     addSystemLine('Dark mode enabled');
   } else {
@@ -96,9 +98,24 @@ function toggleDarkMode() {
 }
 
 function printHelp() {
-  addSystemLine('-dark: toggle dark mode')
-  addSystemLine('-ping: check your latency')
+  for (command in chatCommands) {
+    if (chatCommands.hasOwnProperty(command)) {
+      addSystemLine('-' + command + ': ' + chatCommands[command].description);
+    }
+  }
 }
+
+registerChatCommand('ping', 'check your latency', function () {
+  checkLatency();
+});
+
+registerChatCommand('dark', 'toggle dark mode', function (args) {
+  toggleDarkMode(args);
+});
+
+registerChatCommand('help', 'show information about chat commands', function () {
+  printHelp();
+});
 
 function sendChat(key) {
   var key = key.which || key.keyCode;
@@ -106,23 +123,16 @@ function sendChat(key) {
     var text = chatInput.value.replace(/(<([^>]+)>)/ig,"");
     if (text != "") {
       if (text.indexOf('-') === 0) {
-        switch (text) {
-          case '-ping':
-            checkLatency();
-            break;
-          case '-dark':
-            toggleDarkMode();
-            break;
-          case '-help':
-            printHelp();
-            break;
-          default:
-            addSystemLine('Unrecoginised Command: ' + text + ', type -help for more info');
-          }
+        var args = text.substring(1).split(' ');
+        if (chatCommands[args[0]]) {
+          chatCommands[args[0]].callback(args.slice(1));
         } else {
-          socket.emit("playerChat", { sender: player.name, message: text });
-          addChatLine(player.name, text);
+          addSystemLine('Unrecoginised Command: ' + text + ', type -help for more info');
         }
+      } else {
+        socket.emit("playerChat", { sender: player.name, message: text });
+        addChatLine(player.name, text);
+      }
       chatInput.value = "";
     }
   }
